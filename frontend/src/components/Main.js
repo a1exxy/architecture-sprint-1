@@ -1,8 +1,14 @@
-import React from 'react';
-import Card from './Card';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import React, { lazy, Suspense } from 'react';
+//import Card from './Card';
+import { CurrentUserContext } from '../../profile-microfrontend/src/contexts/CurrentUserContext';
 
-function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete }) {
+const CardList = lazy(() => import("cards/App"));
+
+function Main({
+//  cards,
+  onEditProfile, onAddPlace, onEditAvatar,
+//  onCardClick, onCardLike, onCardDelete
+}) {
   const currentUser = React.useContext(CurrentUserContext);
 
   const imageStyle = { backgroundImage: `url(${currentUser.avatar})` };
@@ -19,17 +25,9 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onC
         <button className="profile__add-button" type="button" onClick={onAddPlace}></button>
       </section>
       <section className="places page__section">
-        <ul className="places__list">
-          {cards.map((card) => (
-            <Card
-              key={card._id}
-              card={card}
-              onCardClick={onCardClick}
-              onCardLike={onCardLike}
-              onCardDelete={onCardDelete}
-            />
-          ))}
-        </ul>
+        <Suspense fallback={<span>Loading...</span>}>
+          <CardList />
+        </Suspense>
       </section>
     </main>
   );
